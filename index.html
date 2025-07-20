@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Hackathon</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <link rel="stylesheet" href="base.css">
+<style>
+  .modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  text-align: center;
+  border-radius: 10px;
+  animation: fadeIn 0.4s ease;
+}
+
+.modal-img {
+  width: 100px;
+  animation: bounce 1s ease infinite alternate;
+}
+
+@keyframes bounce {
+  0% { transform: scale(1) rotate(0deg); }
+  100% { transform: scale(1.2) rotate(10deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+</style>
+</head>
+<body>
+  <header>
+    <div id="progress-bar"></div>
+
+    <nav>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#schedule">Schedule</a></li>
+        <li><a href="#rsvp" class="rsvp-link">RSVP</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#sponsor">Sponsors</a></li>
+        <li><a href="#project">Projects</a></li>
+        
+      </ul>
+      
+    </nav>
+    
+    <img id="logo" src="img/logo.png" alt="Event Logo" />
+    <button class="theme-toggle" onclick="document.body.classList.toggle('dark')">Toggle Theme</button>
+  </header>
+  
+
+
+  <section id="about">
+    
+    <div id="intro">
+      <h3>Welcome! to <strong>Community Hackathon</strong> — an event where Creativity meets Purpose. </h3>
+      
+    </div>
+    <div class="image-container">
+      <img src="img/Hackathon.jpg" alt="Main Hackatho Image" class="zoom-img">
+      <img src="img/Hackathon2.png" alt="Main Hackatho Image" class="zoom-img_2">
+      <img src="img/Hackathon3.png" alt="Main Hackatho Image" class="zoom-img">
+    </div>
+    <div id="about">
+      <h4 class="what">This hackathon is a celebration of technology's power to transform communities and solve real-world challenges. <br><br>Whether you’re an experienced developer, a design enthusiast, or just curious about coding. <br><br>This event offers you a platform to learn, collaborate, and innovate.</h4>
+    </div>
+    <h3 class="what" ><strong>What</strong> To Expect<br></h3>
+    <h4 class="what"><br>"<strong>Code.  Connect.  Change.</strong>"</h4>
+  </section>
+
+  <section id="schedule">
+    <div>
+      <img id="EventSchedule" src="img/EventSchedule.png" alt="Event Schedule"/>
+    </div>
+  </section>
+
+  <section id="rsvp">
+    <div class="rsvp-description">
+      <h2>RSVP</h2>
+      <p>We’re excited to have you join! Please RSVP using the form and see who’s already coming.</p>
+    </div>
+    <div class="rsvp-list">
+      <h3>Who's Coming</h3>
+      <ul id="rsvp-list"></ul>
+    </div>
+    <div class="rsvp-form">
+      <h3>RSVP Form</h3>
+      <input type="text" id="name" placeholder="Your Name" />
+      <input type="email" id="email" placeholder="Your Email" />
+      <input type="text" id="guests" placeholder="Number of Guests" />
+      <button onclick="submitRSVP()">Submit</button>
+      <p id="success-msg" class="success-message">RSVP submitted successfully!</p>
+    </div>
+ 
+  </section>
+
+  <section id="links">
+    
+    <a class="block" href="https://www.codepath.org">
+      <article>
+        <h2>Click Here for more info</h2>
+        <h2>Ask A Sponsor?</h2>
+      </article>
+    </a>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Event Website</p>
+  </footer>
+
+  <script>
+    function submitRSVP() {
+      const name = document.getElementById("name");
+      const email = document.getElementById("email");
+      const guests = document.getElementById("guests");
+      const successMsg = document.getElementById("success-msg");
+  
+      const modal = document.getElementById("modal");
+      const message = document.getElementById("modal-message");
+  
+      let valid = true;
+  
+      for (let input of [name, email, guests]) {
+        const isEmpty = !input.value.trim();
+        input.classList.toggle("invalid", isEmpty);
+        if (isEmpty) valid = false;
+      }
+  
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email.value.trim())) {
+        email.classList.add("invalid");
+        valid = false;
+      }
+  
+      if (valid) {
+        const list = document.getElementById("rsvp-list");
+        const listItem = document.createElement("li");
+        listItem.textContent = `${name.value} (${guests.value} guests)`;
+        list.appendChild(listItem);
+  
+        const rsvps = JSON.parse(localStorage.getItem("rsvps")) || [];
+        rsvps.push({ name: name.value, email: email.value, guests: guests.value });
+        localStorage.setItem("rsvps", JSON.stringify(rsvps));
+  
+        // Show modal with personalized message
+        message.textContent = `Thanks for RSVPing, ${name.value}! We'll contact you at ${email.value}.`;
+        modal.style.display = "flex";
+  
+        name.value = "";
+        email.value = "";
+        guests.value = "";
+  
+        // Hide modal after 4 seconds
+        setTimeout(() => {
+          modal.style.display = "none";
+        }, 4000);
+  
+      } else {
+        successMsg.style.display = "none";
+        alert("Please complete the form correctly.");
+      }
+    }
+  
+    window.onload = () => {
+      const list = document.getElementById("rsvp-list");
+      const rsvps = JSON.parse(localStorage.getItem("rsvps")) || [];
+      rsvps.forEach(entry => {
+        const listItem = document.createElement("li");
+        listItem.textContent = `${entry.name} (${entry.guests} guests)`;
+        list.appendChild(listItem);
+      });
+    };
+  </script>
+  
+     <div id="modal" class="modal">
+      <div class="modal-content">
+        <img src="https://media.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif" class="modal-img" alt="Hackathon Success!" />
+        <p id="modal-message"></p>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const progressBar = document.getElementById("progress-bar");
+        let width = 0;
+    
+        const simulateLoading = setInterval(() => {
+          if (width >= 100) {
+            clearInterval(simulateLoading);
+            progressBar.style.width = "100%";
+            setTimeout(() => {
+              progressBar.style.display = "none";
+            }, 300); // hide bar after complete
+          } else {
+            width += 5; // loading speed
+            progressBar.style.width = width + "%";
+          }
+        }, 50);
+      });
+    </script>
+    
+</body>
+</html>

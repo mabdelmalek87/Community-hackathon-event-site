@@ -1,0 +1,26 @@
+
+:root {
+  --bg-light: #f4f4f9;
+  --bg-dark: #1e1e2f;
+  --text-light: #333;
+  --text-dark: #f1f1f1;
+}
+body {
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+body.dark {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+body.dark header,
+body.dark footer {
+  background-color: black;
+  color: white;
+}
+h2, h3, h4 {
+  text-align: center;
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+}
